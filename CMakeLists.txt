@@ -10,5 +10,3 @@ file(GLOB SOURCES CONFIGURE_DEPENDS
 add_executable(a4c main.cpp ${SOURCES})
 
 target_include_directories(a4c PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-target_link_libraries(a4c PRIVATE ws2_32)
