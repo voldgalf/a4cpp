@@ -15,11 +15,12 @@ workflows, with their own code, with haste.
 
 - [JSON for Modern C++](https://github.com/nlohmann/json)
 
-## Support
+### TODO
 
-| Windows                 | Linux          |
-|-------------------------|----------------|
-| ✅ - Currently Supported | ❌ - Not Tested |
+| Feature                     | Status   |
+|-----------------------------|----------|
+| Logic Statements (If,While) | WIP      |
+| Parallelism                 | Complete |
 
 # License
 
