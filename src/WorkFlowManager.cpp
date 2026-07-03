@@ -8,29 +8,60 @@ WorkflowManager::WorkflowManager() {
     current_node = 0;
 }
 
-void WorkflowManager::add_node(std::unique_ptr<Node> node) {
-    nodes.push_back(std::move(node));
+void WorkflowManager::add_logic_nodes_sync(std::vector<std::unique_ptr<Logic_Node> > nodes_sync) {
+    // Synchronously adds each Node
+
+    for (std::unique_ptr<Logic_Node> &node: nodes_sync) {
+        auto workflow_node = std::make_unique<Workflow_Node>();
+
+        workflow_node->type = NODE;
+
+        workflow_node->node = std::move(node);
+
+        workflow_nodes.emplace_back(std::move(workflow_node));
+    }
 }
 
-void WorkflowManager::run_next() {
-    std::unique_ptr<Node> &node = nodes[current_node];
+void WorkflowManager::add_logic_nodes_async(std::vector<std::unique_ptr<Logic_Node> > nodes_parallel) {
+    // Asynchronously adds each Node
 
-    if (!node->is_executed) {
-        node->run(state);
+    auto workflow_node = std::make_unique<Workflow_Node>();
 
-        if (current_node < nodes.size()) {
-            current_node += 1;
+    workflow_node->type = PARALLEL_NODES;
+
+    workflow_node->parallel_nodes = std::move(nodes_parallel);
+    workflow_nodes.emplace_back(std::move(workflow_node));
+}
+
+void WorkflowManager::run_workflow_node(const std::unique_ptr<Workflow_Node> &workflow_node) {
+    switch (workflow_node->type) {
+        case NODE: {
+            workflow_node->node->run(state);
+            break;
+        }
+        case PARALLEL_NODES: {
+            std::vector<std::future<void> > futures;
+
+            for (std::unique_ptr<Logic_Node> &node: workflow_node->parallel_nodes) {
+                futures.push_back(std::async(std::launch::async,
+                                             [&node, this] { node->run(state); }
+                ));
+            }
+
+            for (std::future<void> &future: futures) {
+                future.get();
+            }
+
+            break;
+        }
+        case LOGIC_STATEMENT: {
+            break;
         }
     }
 }
 
-void WorkflowManager::run_all() {
-    for (std::unique_ptr<Node> &node: nodes) {
-        node->run(state);
+void WorkflowManager::run() {
+    for (std::unique_ptr<Workflow_Node> &workflow_node: workflow_nodes) {
+        run_workflow_node(workflow_node);
     }
 }
-
-nlohmann::json WorkflowManager::get_state() {
-    return state;
-}
-

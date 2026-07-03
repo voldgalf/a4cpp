@@ -5,11 +5,8 @@
 #include <nlohmann/json.hpp>
 
 
-class Node {
+class Logic_Node {
 public:
-    virtual ~Node() = default;
-
-    bool is_executed = false;
-
+    virtual ~Logic_Node() = default;
     virtual void run(nlohmann::json &state) = 0;
 };

@@ -1,25 +1,40 @@
 //
 // Created by brick on 6/29/2026.
 //
-#include <memory>
-#include <Node.h>
 #pragma once
+#include <memory>
+#include <Logic_Node.h>
+#include <future>
 
+enum WorkflowNode_Types {
+    NODE,
+    PARALLEL_NODES,
+    LOGIC_STATEMENT
+};
+
+class Workflow_Node {
+public:
+    WorkflowNode_Types type;
+    std::unique_ptr<Logic_Node> node;
+    std::vector<std::unique_ptr<Logic_Node> > parallel_nodes = {};
+};
 
 class WorkflowManager {
 protected:
-    std::vector<std::unique_ptr<Node> > nodes;
+    std::vector<std::unique_ptr<Workflow_Node> > workflow_nodes;
     int current_node = 0;
     nlohmann::json state = {};
+
+
+    void run_workflow_node(const std::unique_ptr<Workflow_Node> &workflow_node);
 
 public:
     WorkflowManager();
 
-    void add_node(std::unique_ptr<Node> node);
+    void add_logic_nodes_sync(std::vector<std::unique_ptr<Logic_Node> > nodes_sync);
 
-    void run_next();
+    void add_logic_nodes_async(std::vector<std::unique_ptr<Logic_Node> > nodes_async);
 
-    void run_all();
+    void run();
 
-    nlohmann::json get_state();
 };
