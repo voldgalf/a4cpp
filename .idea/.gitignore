@@ -13,3 +13,5 @@
 /misc.xml
 /modules.xml
 /vcs.xml
+/include/HTTPRequest.hpp
+/include/inja.hpp

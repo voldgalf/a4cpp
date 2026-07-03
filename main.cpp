@@ -1,9 +1,11 @@
 #include <iostream>
 #include <memory>
 #include <WorkFlowManager.h>
-#include <Node.h>
+#include <Logic_Node.h>
+#include <chrono>
+#include <thread>
 
-class Node_HelloWorld : public Node {
+class Node_HelloWorld : public Logic_Node {
 protected:
     std::string variable_template;
     std::string output_variable;
@@ -14,10 +16,25 @@ public:
     explicit Node_HelloWorld(const nlohmann::json &properties);
 
     void run(nlohmann::json &state) override {
-        is_executed = true;
-
-
         std::cout << "Hello World!\n";
+    };
+};
+
+class Node_ParallelHelloWorld : public Logic_Node {
+protected:
+    std::string variable_template;
+    std::string output_variable;
+
+public:
+    Node_ParallelHelloWorld() = default;
+
+    explicit Node_ParallelHelloWorld(const nlohmann::json &properties);
+
+    void run(nlohmann::json &state) override {
+        std::this_thread::sleep_for(std::chrono::seconds(3));
+        std::cout << "Hello World! - Parallel\n";
+
+
     };
 };
 
@@ -55,9 +72,20 @@ void AINode::run(nlohmann::json &state) {
 int main() {
     auto manager = WorkflowManager();
 
-    std::unique_ptr<Node> hello_world = std::make_unique<Node_HelloWorld>();
+    std::vector<std::unique_ptr<Logic_Node>> sync_nodes;
 
-    manager.add_node(std::move(hello_world));
+    for (int i = 0; i < 4; i++) {
+        sync_nodes.emplace_back(std::make_unique<Node_HelloWorld>());
+    }
+    manager.add_logic_nodes_sync(std::move(sync_nodes));
 
-    manager.run_all();
+    std::vector<std::unique_ptr<Logic_Node>> async_nodes;
+
+    for (int i = 0; i < 4; i++) {
+        async_nodes.emplace_back(std::make_unique<Node_ParallelHelloWorld>());
+    }
+
+    manager.add_logic_nodes_async(std::move(async_nodes));
+
+    manager.run();
 }
