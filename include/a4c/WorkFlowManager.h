@@ -3,7 +3,7 @@
 //
 #pragma once
 #include <memory>
-#include <Logic_Node.h>
+#include "Logic_Node.h"
 #include <future>
 #include <functional>
 #include <string>
