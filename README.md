@@ -1,4 +1,29 @@
-# a4c - Automation For C++
+<br />
+<div align="center">
+  <a href="https://github.com/othneildrew/Best-README-Template">
+    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  </a>
+
+```
+    _   _  _    ____ 
+   / \ | || |  / ___|
+  / _ \| || |_| |    
+ / ___ \__   _| |___ 
+/_/   \_\ |_|  \____|
+                          
+```
+
+  <p align="center">
+    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
+    &middot;
+    <a href="https://github.com/othneildrew/Best-README-Template/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    &middot;
+    <a href="https://github.com/othneildrew/Best-README-Template/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+  </p>
+</div>
 
 A code-first workflow library built in C++
 
