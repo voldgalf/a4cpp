@@ -53,7 +53,7 @@ void AINode::run(nlohmann::json &state) {
 */
 
 int main() {
-    WorkflowManager manager = WorkflowManager();
+    auto manager = WorkflowManager();
 
     std::unique_ptr<Node> hello_world = std::make_unique<Node_HelloWorld>();
 
