@@ -9,7 +9,7 @@ data-processing, or task-orchestration logic as a graph rather than hand-rolled 
 Clone the respiratory and install with CMake
 
 ```bash
-git clone https://github.com/yourusername/a4c.git
+git clone https://github.com/voldgalf/a4c.git
 cd a4c
 mkdir build && cd build
 cmake ..
