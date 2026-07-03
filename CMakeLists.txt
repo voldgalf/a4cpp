@@ -7,6 +7,6 @@ file(GLOB SOURCES CONFIGURE_DEPENDS
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
 )
 
-add_executable(a4c main.cpp ${SOURCES})
+add_library(a4c ${SOURCES})
 
-target_include_directories(a4c PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(a4c PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/*)
