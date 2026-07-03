@@ -1,28 +1,26 @@
-# A4C - Automation for C++
+# a4c - Automation For C++
 
+A4c is a node-based workflow library for C++.
+It lets you build, connect, and execute pipelines of processing nodes, making it easy to model automation,
+data-processing, or task-orchestration logic as a graph rather than hand-rolled control flow.
 
-A code-first workflow library built in C++
+## Installation
 
-## Description
+Clone the respiratory and install with CMake
 
-It is noticeable that "no code workflow software" are getting all the more popular.
-However, software such as _n8n_ have been shown to struggle with large workflows,
-lacking in speed and integration with custom code.
+```bash
+git clone https://github.com/yourusername/a4c.git
+cd a4c
+mkdir build && cd build
+cmake ..
+cmake --build .
+sudo cmake --install .
+```
 
-This is where a4c is used. a4c is a simple libray that allows any C++ developer to start creating their own node-based
-workflows, with their own code, with haste.
+## License
 
-## Dependencies
+This project is licensed under the MIT License - see [LICENSE](LICENSE.md) for details.
 
-- [JSON for Modern C++](https://github.com/nlohmann/json)
+## Author
 
-### TODO
-
-| Feature                     | Status   |
-|-----------------------------|----------|
-| Logic Statements (If,While) | WIP      |
-| Parallelism                 | Complete |
-
-# License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details
+This respiratory is maintained by [Michael MacMullen "Voldgalf"](https://github.com/voldgalf)
