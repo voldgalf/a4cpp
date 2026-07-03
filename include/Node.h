@@ -7,7 +7,8 @@
 
 class Node {
 public:
-    bool is_executed;
+    virtual ~Node() = default;
+
     bool is_executed = false;
 
     virtual void run(nlohmann::json &state) = 0;
