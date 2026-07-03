@@ -22,14 +22,14 @@ void WorkflowManager::add_logic_nodes_sync(std::vector<std::unique_ptr<Logic_Nod
     }
 }
 
-void WorkflowManager::add_logic_nodes_async(std::vector<std::unique_ptr<Logic_Node> > nodes_parallel) {
+void WorkflowManager::add_logic_nodes_async(std::vector<std::unique_ptr<Logic_Node> > nodes_async) {
     // Asynchronously adds each Node
 
     auto workflow_node = std::make_unique<Workflow_Node>();
 
     workflow_node->type = PARALLEL_NODES;
 
-    workflow_node->parallel_nodes = std::move(nodes_parallel);
+    workflow_node->parallel_nodes = std::move(nodes_async);
     workflow_nodes.emplace_back(std::move(workflow_node));
 }
 
