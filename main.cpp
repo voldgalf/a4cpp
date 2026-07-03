@@ -5,36 +5,53 @@
 #include <chrono>
 #include <thread>
 
-class Node_HelloWorld : public Logic_Node {
-protected:
-    std::string variable_template;
-    std::string output_variable;
-
+class Node_ReadingSpreadSheets : public Logic_Node {
 public:
-    Node_HelloWorld() = default;
+    Node_ReadingSpreadSheets() = default;
 
-    explicit Node_HelloWorld(const nlohmann::json &properties);
+    explicit Node_ReadingSpreadSheets(const nlohmann::json &properties);
 
     void run(nlohmann::json &state) override {
-        std::cout << "Hello World!\n";
+        std::cout << "Reading spreadsheets...\n";
+        std::this_thread::sleep_for(std::chrono::seconds(3));
     };
 };
 
-class Node_ParallelHelloWorld : public Logic_Node {
-protected:
-    std::string variable_template;
-    std::string output_variable;
-
+class Node_ReadingInvoices : public Logic_Node {
 public:
-    Node_ParallelHelloWorld() = default;
+    Node_ReadingInvoices() = default;
 
-    explicit Node_ParallelHelloWorld(const nlohmann::json &properties);
+    explicit Node_ReadingInvoices(const nlohmann::json &properties);
 
     void run(nlohmann::json &state) override {
+        std::cout << "Reading invoices...\n";
         std::this_thread::sleep_for(std::chrono::seconds(3));
-        std::cout << "Hello World! - Parallel\n";
+    };
+};
 
+class Node_GeneratingReport : public Logic_Node {
+public:
+    Node_GeneratingReport() = default;
 
+    explicit Node_GeneratingReport(const nlohmann::json &properties);
+
+    void run(nlohmann::json &state) override {
+        std::cout << "Generating Report...\n";
+        std::this_thread::sleep_for(std::chrono::seconds(3));
+    };
+};
+
+class Node_PrintInput : public Logic_Node {
+    nlohmann::json properties;
+
+public:
+    Node_PrintInput() = default;
+
+    explicit Node_PrintInput(nlohmann::json properties) : properties(std::move(properties)) {
+    }
+
+    void run(nlohmann::json &state) override {
+        std::cout << "Printing input... " << properties.dump() << "\n";
     };
 };
 
@@ -69,22 +86,24 @@ void AINode::run(nlohmann::json &state) {
 }
 */
 
+
 int main() {
     auto manager = WorkflowManager();
 
-    std::vector<std::unique_ptr<Logic_Node>> sync_nodes;
+    std::vector<std::unique_ptr<Logic_Node> > sync_nodes;
 
-    for (int i = 0; i < 4; i++) {
-        sync_nodes.emplace_back(std::make_unique<Node_HelloWorld>());
+    for (int i = 0; i < 1; i++) {
+        sync_nodes.emplace_back(std::make_unique<Node_ReadingSpreadSheets>());
+        sync_nodes.emplace_back(std::make_unique<Node_ReadingInvoices>());
     }
     manager.add_logic_nodes_sync(std::move(sync_nodes));
 
-    std::vector<std::unique_ptr<Logic_Node>> async_nodes;
+    std::vector<std::unique_ptr<Logic_Node> > async_nodes;
 
-    for (int i = 0; i < 4; i++) {
-        async_nodes.emplace_back(std::make_unique<Node_ParallelHelloWorld>());
+    for (int i = 0; i < 2; i++) {
+        async_nodes.emplace_back(std::make_unique<Node_GeneratingReport>());
     }
-
+    
     manager.add_logic_nodes_async(std::move(async_nodes));
 
     manager.run();
