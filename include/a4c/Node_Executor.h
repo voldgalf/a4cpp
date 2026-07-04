@@ -12,41 +12,41 @@
 
 using lambda_node = std::function<nlohmann::json(nlohmann::json state)>;
 
-enum Node_Type {
+enum node_type {
     SYNC,
     ASYNC,
 };
 
-struct Node {
-    Node_Type type;
+struct node {
+    node_type type;
     lambda_node sync_logic;
     std::vector<lambda_node> async_logic;
 };
 
-class Node_Executor {
+class node_executor {
 protected:
-    std::vector<Node> nodes;
-    nlohmann::json state;
+    std::vector<node> nodes_;
+    nlohmann::json state_;
 
 public:
-    Node_Executor() = default;
+    node_executor() = default;
 
 
     bool create_async_node(const std::vector<lambda_node> &async_nodes);
 
-    template<typename T_input, typename T_output>
-    bool map_async(std::function<T_output(T_input)> base_node, std::vector<T_input> input_vector) {
-        std::vector<std::future<T_output> > logic_futures;
+    template<typename TInput, typename TOutput>
+    bool map_async(std::function<TOutput(TInput)> base_node, std::vector<TInput> input_vector) {
+        std::vector<std::future<TOutput> > logic_futures;
 
 
-        for (T_input input_item: input_vector) {
-            nlohmann::json state_copy = state;
+        for (TInput input_item: input_vector) {
+            nlohmann::json state_copy = state_;
 
             logic_futures.push_back(std::async(std::launch::async, base_node, input_item));
         }
 
-        for (std::future<T_output> &future: logic_futures) {
-            state.merge_patch(future.get());
+        for (std::future<TOutput> &future: logic_futures) {
+            state_.merge_patch(future.get());
         }
 
         return true;
