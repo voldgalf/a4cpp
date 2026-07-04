@@ -24,10 +24,9 @@ struct Node {
 class Node_Executor {
 protected:
     std::vector<Node> nodes;
-
-public:
     nlohmann::json state;
 
+public:
     Node_Executor() = default;
 
     bool create_async_node(const std::vector<std::function<void(nlohmann::json &)> > &async_nodes);
