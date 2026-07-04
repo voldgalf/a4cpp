@@ -2,7 +2,6 @@
 // Created by mike on 7/3/26.
 //
 #include "../include/a4c/Node_Executor.h"
-#include <future>
 
 
 bool Node_Executor::create_sync_node(const std::function<void(nlohmann::json &)> &sync_node) {
@@ -19,7 +18,6 @@ bool Node_Executor::create_async_node(const std::vector<std::function<void(nlohm
 
     return true;
 }
-
 
 bool Node_Executor::run() {
     for (Node &node: nodes) {

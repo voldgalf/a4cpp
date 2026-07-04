@@ -6,6 +6,7 @@
 
 #include <functional>
 #include <vector>
+#include <future>
 
 #include "../nlohmann/json.hpp"
 
