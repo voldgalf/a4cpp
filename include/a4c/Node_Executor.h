@@ -14,7 +14,7 @@ enum Node_Type {
     ASYNC,
 };
 
-struct Node_Prototype {
+struct Node {
     Node_Type type;
     std::function<void(nlohmann::json &)> sync_logic;
     std::vector<std::function<void(nlohmann::json &)> > async_logic;
@@ -22,16 +22,16 @@ struct Node_Prototype {
 
 class Node_Executor {
 protected:
-    std::vector<Node_Prototype> nodes;
+    std::vector<Node> nodes;
 
 public:
     nlohmann::json state;
 
     Node_Executor() = default;
 
-    bool create_async_node(std::vector<std::function<void(nlohmann::json &)> > async_nodes);
+    bool create_async_node(const std::vector<std::function<void(nlohmann::json &)> > &async_nodes);
 
-    bool create_sync_node(std::function<void(nlohmann::json &)> sync_node);
+    bool create_sync_node(const std::function<void(nlohmann::json &)> &sync_node);
 
     bool run();
 };

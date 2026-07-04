@@ -5,16 +5,16 @@
 #include <future>
 
 
-bool Node_Executor::create_sync_node(std::function<void(nlohmann::json &)> sync_node) {
-    const Node_Prototype new_node{.type = SYNC, .sync_logic = sync_node};
+bool Node_Executor::create_sync_node(const std::function<void(nlohmann::json &)> &sync_node) {
+    const Node new_node{.type = SYNC, .sync_logic = sync_node};
 
     nodes.push_back(new_node);
 
     return true;
 }
 
-bool Node_Executor::create_async_node(std::vector<std::function<void(nlohmann::json &)> > async_nodes) {
-    const Node_Prototype new_node{.type = ASYNC, .async_logic = async_nodes};
+bool Node_Executor::create_async_node(const std::vector<std::function<void(nlohmann::json &)> > &async_nodes) {
+    const Node new_node{.type = ASYNC, .async_logic = async_nodes};
     nodes.push_back(new_node);
 
     return true;
@@ -22,12 +22,12 @@ bool Node_Executor::create_async_node(std::vector<std::function<void(nlohmann::j
 
 
 bool Node_Executor::run() {
-    for (Node_Prototype &node: nodes) {
+    for (Node &node: nodes) {
         switch (node.type) {
             case ASYNC: {
                 std::vector<std::future<void> > logic_futures;
 
-                for (std::function<void(nlohmann::json &)> logic: node.async_logic) {
+                for (std::function logic: node.async_logic) {
                     logic_futures.push_back(std::async(std::launch::async, logic, std::ref(state)));
                 }
 
