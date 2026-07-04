@@ -4,7 +4,7 @@
 #include "../include/a4c/Node_Executor.h"
 
 
-bool Node_Executor::create_sync_node(const std::function<void(nlohmann::json &)> &sync_node) {
+bool Node_Executor::create_sync_node(const lambda_node &sync_node) {
     const Node new_node{.type = SYNC, .sync_logic = sync_node};
 
     nodes.push_back(new_node);
@@ -12,7 +12,7 @@ bool Node_Executor::create_sync_node(const std::function<void(nlohmann::json &)>
     return true;
 }
 
-bool Node_Executor::create_async_node(const std::vector<std::function<void(nlohmann::json &)> > &async_nodes) {
+bool Node_Executor::create_async_node(const std::vector<lambda_node> &async_nodes) {
     const Node new_node{.type = ASYNC, .async_logic = async_nodes};
     nodes.push_back(new_node);
 
@@ -23,20 +23,26 @@ bool Node_Executor::run() {
     for (Node &node: nodes) {
         switch (node.type) {
             case ASYNC: {
-                std::vector<std::future<void> > logic_futures;
+                std::vector<std::future<nlohmann::json> > logic_futures;
 
                 for (std::function logic: node.async_logic) {
-                    logic_futures.push_back(std::async(std::launch::async, logic, std::ref(state)));
+                    nlohmann::json state_clone = state;
+
+                    logic_futures.push_back(std::async(std::launch::async, logic, state_clone));
                 }
 
-                for (std::future<void> &future: logic_futures) {
-                    future.get();
+                for (std::future<nlohmann::json> &future: logic_futures) {
+                    nlohmann::json state_modified = future.get();
+
+                    state.merge_patch(state_modified);
                 }
 
                 break;
             }
             case SYNC: {
-                node.sync_logic(std::ref(state));
+                nlohmann::json state_clone = state;
+
+                state.merge_patch(state_clone);
 
                 break;
             }

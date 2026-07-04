@@ -10,6 +10,8 @@
 
 #include "../nlohmann/json.hpp"
 
+using lambda_node = std::function<nlohmann::json(nlohmann::json state)>;
+
 enum Node_Type {
     SYNC,
     ASYNC,
@@ -17,8 +19,8 @@ enum Node_Type {
 
 struct Node {
     Node_Type type;
-    std::function<void(nlohmann::json &)> sync_logic;
-    std::vector<std::function<void(nlohmann::json &)> > async_logic;
+    lambda_node sync_logic;
+    std::vector<lambda_node> async_logic;
 };
 
 class Node_Executor {
@@ -29,7 +31,8 @@ protected:
 public:
     Node_Executor() = default;
 
-    bool create_async_node(const std::vector<std::function<void(nlohmann::json &)> > &async_nodes);
+
+    bool create_async_node(const std::vector<lambda_node> &async_nodes);
 
     template<typename T_input, typename T_output>
     bool map_async(std::function<T_output(T_input)> base_node, std::vector<T_input> input_vector) {
@@ -37,17 +40,21 @@ public:
 
 
         for (T_input input_item: input_vector) {
+            nlohmann::json state_copy = state;
+
             logic_futures.push_back(std::async(std::launch::async, base_node, input_item));
         }
 
         for (std::future<T_output> &future: logic_futures) {
-            future.get();
+            state.merge_patch(future.get());
         }
 
         return true;
     }
 
-    bool create_sync_node(const std::function<void(nlohmann::json &)> &sync_node);
+    bool create_sync_node(const lambda_node &sync_node);
 
     bool run();
+
+    nlohmann::json get_state() const;
 };
