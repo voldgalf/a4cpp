@@ -45,3 +45,7 @@ bool Node_Executor::run() {
 
     return true;
 }
+
+nlohmann::json Node_Executor::get_state() const {
+    return state;
+}
