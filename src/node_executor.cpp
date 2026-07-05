@@ -18,7 +18,7 @@ bool node_executor::add_node(std::vector<node::logic_function> node_vector,const
       return true;
     } catch (std::exception &e)
       {
-        std::cerr << e.what() << std::endl;
+        SPDLOG_ERROR(e.what());
         return false;
       }
 }
@@ -29,43 +29,43 @@ bool node_executor::run() {
       for (node::definition &node: nodes_) {
           switch (node.mode) {
             case node::CONCURRENT: {
-              std::vector<std::future<nlohmann::json> > logic_future_vector;
+              try
+                {
+                  std::vector<std::future<nlohmann::json> > logic_future_vector;
 
-              // Iterates through every node_logic item, calling them through async and adding their future to logic_future_vector
-              for (const node::logic& logic: node.logic_vector) {
-                  logic_future_vector.push_back(std::async(std::launch::async, logic.function, state_));
-              }
                   // Iterates through every node_logic item, calling them through async and adding their future to logic_future_vector
                   for (int i = 0; i < node.logic_vector.size(); i++) {
+                      SPDLOG_INFO("CONCURRENT\tCalling logic [{}/{}]", i, node.logic_vector.size());
                       logic_future_vector.push_back(std::async(std::launch::async, node.logic_vector.at (i).function, state_));
                   }
 
-              // Checks every future from logic_future_vector, updating the member state_ with the result of each node
-              for (int i = 0; i< node.logic_vector.size(); ++i) {
-
-                  if (logic_future_vector.at(i).valid())
-                    {
+                  // Checks every future from logic_future_vector, updating the member state_ with the result of each node
+                  for (int i = 0; i< node.logic_vector.size(); ++i) {
+                      SPDLOG_INFO("CONCURRENT\tRetrieving future [{}/{}]", i, node.logic_vector.size());
                       node.logic_vector.at(i).status = node::SUCCESS;
                       nlohmann::json state_modified = logic_future_vector.at(i).get();
                       state_.merge_patch(state_modified);
-                    } else
-                      {
-                        node.logic_vector.at(i).status = node::FAILURE;
-                      }
-              }
-
+                  }
+                } catch (std::exception &e)
+                  {
+                    SPDLOG_ERROR(e.what());
                   }
               break;
             }
             case node::SEQUENTIAL: {
-              node::logic &logic = node.logic_vector.at(0);
+              try
+                {
 
-              state_.merge_patch(logic.function(state_));
+                  SPDLOG_INFO("SEQUENTIAL\tCalling logic");
                   node::logic_data &logic_data = node.logic_vector.at(0);
 
                   state_.merge_patch(logic_data.function(state_));
 
                   logic_data.status = node::SUCCESS;
+                } catch (std::exception &e)
+                  {
+                    SPDLOG_ERROR(e.what());
+                  }
             }
           }
       }
@@ -74,7 +74,7 @@ bool node_executor::run() {
     }
   catch (std::exception &e)
     {
-      std::cerr << e.what() << std::endl;
+      SPDLOG_ERROR(e.what());
       return false;
     }
 }

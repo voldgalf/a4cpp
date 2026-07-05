@@ -10,3 +10,6 @@ file(GLOB SOURCES CONFIGURE_DEPENDS
 add_library(a4c ${SOURCES})
 
 target_include_directories(a4c PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/*)
+
+find_package(spdlog REQUIRED)
+target_link_libraries(a4c PRIVATE spdlog::spdlog)
