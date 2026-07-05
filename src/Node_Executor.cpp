@@ -3,14 +3,14 @@
 //
 #include "../include/a4c/Node_Executor.h"
 namespace a4c {
-bool node_executor::add_node(std::vector<node::function_alias> nodes,node::execution_mode mode_flag)
+bool node_executor::add_node(std::vector<node::function_alias> node_vector,const node::execution_mode mode_flag)
 {
   try
     {
       std::vector<node::logic> node_logic_vector;
-      for (int i = 0; i < nodes.size(); ++i)
+      for (int i = 0; i < node_vector.size(); ++i)
         {
-          node_logic_vector.push_back({.status = node::IDLE, .function = nodes.at(i)});
+          node_logic_vector.push_back({.status = node::IDLE, .function = node_vector.at(i)});
         }
 
       nodes_.push_back({.mode = mode_flag, .logic_vector = node_logic_vector});

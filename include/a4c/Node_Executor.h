@@ -77,7 +77,7 @@ public:
   }
 
 
-  bool add_node(std::vector<node::function_alias> nodes,node::execution_mode mode_flag);
+  bool add_node(std::vector<node::function_alias> node_vector,node::execution_mode mode_flag);
 
   bool run();
 
