@@ -3,15 +3,10 @@
 #include <functional>
 #include <vector>
 
-namespace a4c {
-namespace node {
 
-using function_alias = std::function<nlohmann::json(nlohmann::json state)>;
+namespace a4c::node {
 
-enum execution_mode {
-  SEQUENTIAL,
-  CONCURRENT,
-};
+using logic_function = std::function<nlohmann::json(nlohmann::json state)>;
 
 enum logic_status
 {
@@ -20,15 +15,21 @@ enum logic_status
   FAILURE,
 };
 
-struct logic
+struct logic_data
 {
-  logic_status status;
-  function_alias function;
+  logic_status status = IDLE;
+  logic_function function;
+};
+
+using definition_vector = std::vector<logic_data>;
+
+enum definition_mode {
+  SEQUENTIAL,
+  CONCURRENT,
 };
 
 struct definition {
-  execution_mode mode;
-  std::vector<logic> logic_vector;
+  definition_mode mode;
+  definition_vector logic_vector;
 };
-}
 }
