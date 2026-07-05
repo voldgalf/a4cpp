@@ -2,56 +2,66 @@
 // Created by mike on 7/3/26.
 //
 #include "../include/a4c/Node_Executor.h"
+namespace a4c {
+bool node_executor::add_node(std::vector<node::function_alias> nodes,node::execution_mode mode_flag)
+{
+  std::vector<node::logic> node_logic_vector;
+  for (int i = 0; i < nodes.size(); ++i)
+    {
+      node_logic_vector.push_back({.status = node::IDLE, .function = nodes.at(i)});
+    }
 
+  nodes_.push_back({.mode = mode_flag, .logic_vector = node_logic_vector});
 
-bool node_executor::create_sync_node(const lambda_node &sync_node) {
-    const node new_node{.type = SYNC, .sync_logic = sync_node};
-
-    nodes_.push_back(new_node);
-
-    return true;
-}
-
-bool node_executor::create_async_node(const std::vector<lambda_node> &async_nodes) {
-    const node new_node{.type = ASYNC, .async_logic = async_nodes};
-    nodes_.push_back(new_node);
-
-    return true;
+  return true;
 }
 
 bool node_executor::run() {
-    for (node &node: nodes_) {
-        switch (node.type) {
-            case ASYNC: {
-                std::vector<std::future<nlohmann::json> > logic_futures;
+  for (node::definition &node: nodes_) {
+      switch (node.mode) {
+        case node::CONCURRENT: {
+          std::vector<std::future<nlohmann::json> > logic_future_vector;
 
-                for (const lambda_node& logic: node.async_logic) {
-                    nlohmann::json state_clone = state_;
+          // Iterates through every node_logic item, calling them through async and adding their future to logic_future_vector
+          for (const node::logic& logic: node.logic_vector) {
+              logic_future_vector.push_back(std::async(std::launch::async, logic.function, state_));
+          }
 
-                    logic_futures.push_back(std::async(std::launch::async, logic, state_clone));
-                }
+          // Checks every future from logic_future_vector, updating the member state_ with the result of each node
+          for (int i = 0; i< node.logic_vector.size(); ++i) {
 
-                for (std::future<nlohmann::json> &future: logic_futures) {
-                    nlohmann::json state_modified = future.get();
+              if (logic_future_vector.at(i).valid())
+                {
+                  node.logic_vector.at(i).status = node::SUCCESS;
 
-                    state_.merge_patch(state_modified);
-                }
 
-                break;
-            }
-            case SYNC: {
-                nlohmann::json state_clone = state_;
+                  nlohmann::json state_modified = logic_future_vector.at(i).get();
 
-                state_.merge_patch(state_clone);
 
-                break;
-            }
+                  state_.merge_patch(state_modified);
+                } else
+                  {
+                    node.logic_vector.at(i).status = node::FAILURE;
+                  }
+          }
+
+          break;
         }
-    }
+        case node::SEQUENTIAL: {
+          node::logic &logic = node.logic_vector.at(0);
 
-    return true;
+          state_.merge_patch(logic.function(state_));
+
+          logic.status = node::SUCCESS;
+
+        }
+      }
+  }
+
+  return true;
 }
 
 nlohmann::json node_executor::get_state() const {
-    return state_;
+  return state_;
+}
 }
