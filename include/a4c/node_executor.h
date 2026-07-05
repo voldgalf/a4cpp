@@ -22,16 +22,13 @@ public:
 
     spdlog::set_pattern("[%H:%M:%S] [%^%l%$] [%s:%# %!] %v");
     SPDLOG_INFO("node_executor created successfully.");
-  };
+  }
 
-  /*
   template<typename TInput, typename TOutput>
   bool map_async(std::function<TOutput(TInput)> base_node, std::vector<TInput> input_vector) {
     try
       {
-
-        //SPDLOG_INFO("Starting function...");
-
+        
         std::vector<std::future<TOutput> > logic_futures;
 
 
@@ -56,7 +53,6 @@ public:
         return false;
       }
   }
-  */
 
   bool add_node(std::vector<node::logic_function> node_vector,node::definition_mode mode_flag);
 
