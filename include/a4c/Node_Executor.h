@@ -10,6 +10,8 @@
 
 #include "../nlohmann/json.hpp"
 
+#include <iostream>
+
 namespace a4c {
 namespace node {
 
@@ -50,20 +52,28 @@ public:
 
   template<typename TInput, typename TOutput>
   bool map_async(std::function<TOutput(TInput)> base_node, std::vector<TInput> input_vector) {
-    std::vector<std::future<TOutput> > logic_futures;
+    try
+      {
+        std::vector<std::future<TOutput> > logic_futures;
 
 
-    for (TInput input_item: input_vector) {
-        nlohmann::json state_copy = state_;
+        for (TInput input_item: input_vector) {
+            nlohmann::json state_copy = state_;
 
-        logic_futures.push_back(std::async(std::launch::async, base_node, input_item));
-    }
+            logic_futures.push_back(std::async(std::launch::async, base_node, input_item));
+        }
 
-    for (std::future<TOutput> &future: logic_futures) {
-        state_.merge_patch(future.get());
-    }
+        for (std::future<TOutput> &future: logic_futures) {
+            state_.merge_patch(future.get());
+        }
 
-    return true;
+        return true;
+      }
+    catch (std::exception &e)
+      {
+        std::cerr << e.what() << std::endl;
+        return false;
+      }
   }
 
 
