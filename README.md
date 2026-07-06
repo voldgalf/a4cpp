@@ -24,3 +24,9 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE.md) for d
 ## Author
 
 This respiratory is maintained by [Michael MacMullen "Voldgalf"](https://github.com/voldgalf)
+
+---
+
+## Powered By
+
+![Jetbrains Logo](https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/JetBrains_company_logo.svg/1280px-JetBrains_company_logo.svg.png "e")
