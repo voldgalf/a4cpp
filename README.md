@@ -27,6 +27,6 @@ This respiratory is maintained by [Michael MacMullen "Voldgalf"](https://github.
 
 ---
 
-## Powered By
+### Powered by
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/JetBrains_company_logo.svg/1280px-JetBrains_company_logo.svg.png" width="250">
