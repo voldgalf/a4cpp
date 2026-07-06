@@ -50,7 +50,7 @@ if (A4CPP_INSTALL)
     # Version file, so find_package(a4cpp 1.0) can version-check
     write_basic_package_version_file(
             "${CMAKE_CURRENT_BINARY_DIR}/a4cppConfigVersion.cmake"
-            VERSION ${PROJECT_VERSION}
+            VERSION 0.0.1
             COMPATIBILITY SameMajorVersion
     )
 
