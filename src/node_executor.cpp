@@ -2,6 +2,7 @@
 // Created by mike on 7/3/26.
 //
 #include "../include/a4c/node_executor.h"
+
 namespace a4c {
 bool node_executor::add_node(std::vector<node::logic_function> node_vector,const node::definition_mode mode_flag)
 {
@@ -31,21 +32,27 @@ bool node_executor::run() {
             case node::CONCURRENT: {
               try
                 {
+
+                  SPDLOG_INFO("Concurrent node start");
+
                   std::vector<std::future<nlohmann::json> > logic_future_vector;
 
                   // Iterates through every node_logic item, calling them through async and adding their future to logic_future_vector
                   for (int i = 0; i < node.logic_vector.size(); i++) {
-                      SPDLOG_INFO("CONCURRENT\tCalling logic [{}/{}]", i, node.logic_vector.size());
+                      SPDLOG_DEBUG("Calling logic [{}/{}]", i, node.logic_vector.size());
                       logic_future_vector.push_back(std::async(std::launch::async, node.logic_vector.at (i).function, state_));
                   }
 
                   // Checks every future from logic_future_vector, updating the member state_ with the result of each node
                   for (int i = 0; i< node.logic_vector.size(); ++i) {
-                      SPDLOG_INFO("CONCURRENT\tRetrieving future [{}/{}]", i, node.logic_vector.size());
+                      SPDLOG_DEBUG("Retrieving future [{}/{}]", i, node.logic_vector.size());
                       node.logic_vector.at(i).status = node::SUCCESS;
                       nlohmann::json state_modified = logic_future_vector.at(i).get();
                       state_.merge_patch(state_modified);
                   }
+
+                  SPDLOG_INFO("Concurrent node complete");
+
                 } catch (std::exception &e)
                   {
                     SPDLOG_ERROR(e.what());
@@ -56,10 +63,14 @@ bool node_executor::run() {
               try
                 {
 
-                  SPDLOG_INFO("SEQUENTIAL\tCalling logic");
+                  SPDLOG_INFO("Sequential node start");
+
+                  SPDLOG_DEBUG("Calling logic");
                   node::logic_data &logic_data = node.logic_vector.at(0);
 
                   state_.merge_patch(logic_data.function(state_));
+
+                  SPDLOG_INFO("Sequential node complete");
 
                   logic_data.status = node::SUCCESS;
                 } catch (std::exception &e)
