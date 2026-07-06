@@ -12,6 +12,7 @@ Clone the respiratory and install with CMake
 git clone https://github.com/voldgalf/a4c.git
 cd a4c
 
+cmake -S . -B build
 cmake --build build
 sudo cmake --install build
 ```
