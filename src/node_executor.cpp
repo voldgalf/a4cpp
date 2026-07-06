@@ -1,9 +1,9 @@
 //
 // Created by mike on 7/3/26.
 //
-#include "../include/a4c/node_executor.h"
+#include "../include/a4cpp/node_executor.h"
 
-namespace a4c {
+namespace a4cpp {
 bool node_executor::add_node(std::vector<node::logic_function> node_vector,const node::definition_mode mode_flag)
 {
   try

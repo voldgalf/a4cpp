@@ -1,6 +1,6 @@
-# a4c - Automation For C++
+# a4cpp - Automation For C++
 
-A4c is a node-based workflow library for C++.
+a4cpp is a node-based workflow library for C++.
 It lets you build, connect, and execute pipelines of processing nodes, making it easy to model automation,
 data-processing, or task-orchestration logic as a graph rather than hand-rolled control flow.
 

@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-namespace a4c {
+namespace a4cpp {
 
 
 /**

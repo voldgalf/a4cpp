@@ -8,7 +8,7 @@
 #include <vector>
 
 
-namespace a4c::node {
+namespace a4cpp::node {
 
 /**
  * @var logic_function
