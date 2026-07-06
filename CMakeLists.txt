@@ -48,11 +48,11 @@ if (A4CPP_INSTALL)
     )
 
     # Version file, so find_package(a4cpp 1.0) can version-check
-    write_basic_package_version_file(
-            "${CMAKE_CURRENT_BINARY_DIR}/a4cppConfigVersion.cmake"
-            VERSION 0.0.1
-            COMPATIBILITY SameMajorVersion
-    )
+    #write_basic_package_version_file(
+    #        "${CMAKE_CURRENT_BINARY_DIR}/a4cppConfigVersion.cmake"
+    #        VERSION 0.0.1
+    #        COMPATIBILITY SameMajorVersion
+    #)
 
     # Config file consumers actually load via find_package(a4cpp)
     configure_package_config_file(
