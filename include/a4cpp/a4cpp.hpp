@@ -98,8 +98,8 @@ public:
 
         std::vector<function> function_vector;
 
-        for (int i = 0; i < logic_vector.size(); i++) {
-            function_vector.push_back({.logic = logic_vector.at(i),});
+        for (const auto &func_logic: logic_vector) {
+            function_vector.push_back({.logic = func_logic,});
         }
 
 
