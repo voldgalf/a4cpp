@@ -91,41 +91,50 @@ public:
     }
 
     bool add_node(const std::vector<function_logic> &logic_vector) {
-        node_mode selected_mode = sequential;
-        if (logic_vector.size() > 1) selected_mode = concurrent;
+        try {
+            node_mode selected_mode = sequential;
+            if (logic_vector.size() > 1) selected_mode = concurrent;
 
-        std::string selected_mode_str = selected_mode == sequential ? "sequential" : "concurrent";
+            std::string selected_mode_str = selected_mode == sequential ? "sequential" : "concurrent";
 
-        std::vector<function> function_vector;
+            std::vector<function> function_vector;
 
-        for (const auto &func_logic: logic_vector) {
-            function_vector.push_back({.logic = func_logic,});
+            for (const auto &func_logic: logic_vector) {
+                function_vector.push_back({.logic = func_logic,});
+            }
+
+
+            SPDLOG_INFO("Created {} node", selected_mode_str);
+            nodes_.push_back({.mode = selected_mode, .function_vector = function_vector});
+            return true;
+        } catch (std::exception &e) {
+            SPDLOG_ERROR(e.what());
+            return false;
         }
-
-
-        SPDLOG_INFO("Created {} node", selected_mode_str);
-        nodes_.push_back({.mode = selected_mode, .function_vector = function_vector});
-        return true;
     }
 
     bool start() {
         SPDLOG_INFO("Start execution sequence");
-
-        for (auto &n: nodes_) {
-            switch (n.mode) {
-                case sequential: {
-                    run_node_sequential(n);
-                    break;
-                }
-                case concurrent: {
-                    run_node_concurrent(n);
-                    break;
+        try {
+            for (auto &n: nodes_) {
+                switch (n.mode) {
+                    case sequential: {
+                        run_node_sequential(n);
+                        break;
+                    }
+                    case concurrent: {
+                        run_node_concurrent(n);
+                        break;
+                    }
                 }
             }
+
+            SPDLOG_INFO("End execution sequence");
+
+            return true;
+        } catch (std::exception &e) {
+            SPDLOG_ERROR(e.what());
+            return false;
         }
-
-        SPDLOG_INFO("End execution sequence");
-
-        return true;
     }
 };
