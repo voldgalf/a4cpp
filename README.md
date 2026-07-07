@@ -1,8 +1,27 @@
 # a4cpp - Automation For C++
 
-a4cpp is a node-based workflow library for C++.
-It lets you build, connect, and execute pipelines of processing nodes, making it easy to model automation,
-data-processing, or task-orchestration logic as a graph rather than hand-rolled control flow.
+a4cpp is a C++ dataflow library, allowing uncomplicated concurrent and sequential logic execution.
+
+
+### Legend
+| Not Started | Work In Progress  | Complete |
+|------------------|-------------|----------|
+|🟥|🟧|🟩
+
+### TODO
+
+| Feature             | Description                                                               | Status |
+|---------------------|---------------------------------------------------------------------------|--------|
+| API Refactor        | Refactor API, simplifying and optimizing logic                           | 🟧     |
+| CMake find_package  | Allow CMake to make the a4cpp library importable using find_package       | 🟥     |
+| Concurrent Support  | Allow a node to concurrently execute *multiple* functions                 | 🟩     |
+| Error handling      | Handle errors from a node's logic appropriately and without crashing      | 🟧     |
+| Logger Support      | Support for spdlog including: implementation & log exporting              | 🟧     |
+| README Update       | Update the README for better branding, description, and usage             | 🟧     |
+| Retry Support       | Allows a node to retry or run itself again, depending on the error        | 🟥     |
+| Sequential Support  | Allow a node to sequentially execute a single function                    | 🟩     |
+|Documentation | Write doxygen comments for effective and usable documentation | 🟥
+
 
 ## Installation
 
