@@ -111,9 +111,8 @@ public:
     bool start() {
         SPDLOG_INFO("Start execution sequence");
 
-        for (int i = 0; i < nodes_.size(); i++) {
-            switch (node &n = nodes_.at(i); n.mode) {
-                case SEQUENTIAL: {
+        for (auto &n: nodes_) {
+            switch (n.mode) {
                 case sequential: {
                     run_node_sequential(n);
                     break;
