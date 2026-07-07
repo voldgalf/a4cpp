@@ -39,12 +39,8 @@ sudo cmake --install build
 ## Simple Usage
 
 ```cpp
-
 #include <iostream>
 #include <a4cpp/node_executor.h>
-
-// Did you notice a bug? Requesting a new feature? Just Complaining?
-// Open an issue at: https://github.com/voldgalf/a4cpp/issues
 
 int main() {
     a4cpp::node_executor executor; // Create an instance of node_executor
@@ -84,11 +80,11 @@ int main() {
 
 This project is licensed under the MIT License - see [LICENSE](LICENSE.md) for details.
 
-## Author
+## Reporting Issues
 
-This respiratory is maintained by [Michael MacMullen "Voldgalf"](https://github.com/voldgalf)
+Found a bug? Have a feature request? Please [open an issue](https://github.com/voldgalf/a4cpp/issues)!
 
----
+Before creating a new issue, please check if it already exists.
 
 ### Powered by
 
