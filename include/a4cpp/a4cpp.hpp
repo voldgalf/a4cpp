@@ -44,35 +44,45 @@ protected:
     nlohmann::json state_;
 
     bool run_node_concurrent(node &n) {
-        SPDLOG_INFO("Start concurrent node");
+        try {
+            SPDLOG_INFO("Start concurrent node");
 
-        std::vector<std::future<void> > futures;
+            std::vector<std::future<void> > futures;
 
-        for (int i = 0; i < n.function_vector.size(); i++) {
-            SPDLOG_DEBUG("Launching future [{}/{}]", i, n.function_vector_.size());
-            function &func = n.function_vector.at(i);
-            futures.push_back(std::async(std::launch::async, func.logic, state_));
+            for (int i = 0; i < n.function_vector.size(); i++) {
+                SPDLOG_DEBUG("Launching future [{}/{}]", i, n.function_vector_.size());
+                function &func = n.function_vector.at(i);
+                futures.push_back(std::async(std::launch::async, func.logic, state_));
+            }
+
+            for (int i = 0; i < futures.size(); i++) {
+                SPDLOG_DEBUG("Collecting future [{}/{}]", i, n.function_vector_.size());
+                futures[i].wait();
+            }
+            SPDLOG_INFO("End concurrent node");
+            return true;
+        } catch (std::exception &e) {
+            SPDLOG_INFO("End concurrent node");
+            SPDLOG_ERROR(e.what());
+            return false;
         }
-
-        for (int i = 0; i < futures.size(); i++) {
-            SPDLOG_DEBUG("Collecting future [{}/{}]", i, n.function_vector_.size());
-            futures[i].wait();
-        }
-
-        SPDLOG_INFO("End concurrent node");
-
-        return true;
     }
 
     bool run_node_sequential(node &n) const {
-        SPDLOG_INFO("Start sequential node");
+        try {
+            SPDLOG_INFO("Start sequential node");
 
-        function &func = n.function_vector.at(0);
-        func.logic(state_);
+            function &func = n.function_vector.at(0);
+            func.logic(state_);
 
-        SPDLOG_INFO("End sequential node");
+            SPDLOG_INFO("End sequential node");
 
-        return true;
+            return true;
+        } catch (std::exception &e) {
+            SPDLOG_INFO("End sequential node");
+            SPDLOG_ERROR(e.what());
+            return false;
+        }
     }
 
 public:
