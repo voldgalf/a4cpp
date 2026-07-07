@@ -44,7 +44,7 @@ sudo cmake --install build
 #include <a4cpp/node_executor.h>
 
 // Did you notice a bug? Requesting a new feature? Just Complaining?
-// Support Available at michael.macmullen@tutamail.com
+// Open an issue at: https://github.com/voldgalf/a4cpp/issues
 
 int main() {
     a4cpp::node_executor executor; // Create an instance of node_executor
