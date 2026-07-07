@@ -6,8 +6,6 @@
 #include "include/a4cpp/a4cpp.hpp"
 
 int main() {
-    spdlog::set_pattern("[%H:%M:%S:%e] [%^%l%$] [%s:%# %!] %v");
-
     executor exe;
 
     exe.add_node(
