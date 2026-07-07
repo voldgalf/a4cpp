@@ -2,15 +2,13 @@
 
 a4cpp is a C++ dataflow library, allowing uncomplicated concurrent and sequential logic execution.
 
-## TODO
 
 ### Legend
-
 | Not Started | Work In Progress  | Complete |
 |------------------|-------------|----------|
 |🟥|🟧|🟩
 
-### TODO Table
+### TODO
 
 | Feature             | Description                                                               | Status |
 |---------------------|---------------------------------------------------------------------------|--------|
@@ -24,14 +22,10 @@ a4cpp is a C++ dataflow library, allowing uncomplicated concurrent and sequentia
 | Sequential Support  | Allow a node to sequentially execute a single function                    | 🟩     |
 |Documentation | Write doxygen comments for effective and usable documentation | 🟥
 
-## Dependencies
-
-The following dependencies are as of 7/7/2026
-
-- [nlohmann/json](https://github.com/nlohmann/json)
-- [spdlog](https://github.com/gabime/spdlog)
 
 ## Installation
+
+Clone the respiratory and install with CMake
 
 ```bash
 git clone https://github.com/voldgalf/a4c.git
@@ -42,61 +36,41 @@ cmake --build build
 sudo cmake --install build
 ```
 
-## Support
-
-```bash
-*****************************************************************
-Did you notice a bug? Requesting a new feature? Or just Complaining?
-Support Available: michael.macmullen@tutamail.com
-In the subject line put "a4cpp - <query_here>" please.
-*****************************************************************
-```
-
 ## Simple Usage
 
 ```cpp
 #include <iostream>
-#include <vector>
-#include <a4cpp/a4cpp.hpp>
-
-// *****************************************************************
-// Did you notice a bug? Requesting a new feature? Or just Complaining?
-// Support Available: michael.macmullen@tutamail.com
-// In the subject line put "a4cpp - <query_here>" please.
-// *****************************************************************
+#include <a4cpp/node_executor.h>
 
 int main() {
-    executor exe; // Create an instance of executor
+    a4cpp::node_executor executor; // Create an instance of node_executor
 
-    // You can create a new node by calling executor::add_node
-    // The first argument is a vector of lambda functions ...
-    // whose only parameter is a nlohman::json variable
-
-    // NOTICE: there is only ONE function passed to add_node ...
-    // this node will run as sequential
-    exe.add_node(
+    // Add a new node by defining a lambda function that has a nlohmann::json variable as an argument and returns a nlohmann::json variable
+    // Yes, the first argument is wrapped in a vector, but when the mode_flag parameter is SEQUENTIAL, only the first vector element is read
+    executor.add_node(
         {
             [](nlohmann::json state) {
-                std::cout << "Hi from node!" << std::endl;
-            },
-        }
-    );
+                std::cout << "This is a sequential node!\n";
+                return state;
+            }
+        }, a4cpp::node::SEQUENTIAL);
 
 
-    // NOTICE: there is only MORE THEN ONE function passed to add_node ...
-    // this node will run as concurrent
-    exe.add_node(
+    // You can create a cncurrent node by setting the mode_flag to CONCURRENT and defining multiple lambda functions within the node_vector parameter
+    executor.add_node(
         {
-            [](nlohmann::json state) { std::cout << "We run in parallel!" << std::endl; },
-            [](nlohmann::json state) { std::cout << "Wait" << std::endl; },
-            [](nlohmann::json state) { std::cout << "We do?" << std::endl; },
+            [](nlohmann::json state) {
+                std::cout << "We run at the same time!\n";
+                return state;
+            },
+            [](nlohmann::json state) {
+                std::cout << "We do?\n";
+                return state;
+            }
+        }, a4cpp::node::CONCURRENT);
 
-        }
-    );
-
-
-    // You can execute your created nodes by calling executor::start
-    exe.start();
+    // This simply executes all nodes, in the order they are added
+    executor.run();
 
     return 0;
 }
@@ -106,7 +80,11 @@ int main() {
 
 This project is licensed under the MIT License - see [LICENSE](LICENSE.md) for details.
 
----
+## Reporting Issues
+
+Found a bug? Have a feature request? Please [open an issue](https://github.com/voldgalf/a4cpp/issues)!
+
+Before creating a new issue, please check if it already exists.
 
 ### Powered by
 
