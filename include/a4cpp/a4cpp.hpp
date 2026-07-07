@@ -12,9 +12,9 @@
 // Logic
 
 enum function_status {
-    IDLE,
-    SUCCESS,
-    FAILURE
+    idle,
+    success,
+    failure
 };
 
 using function_logic = std::function<void(nlohmann::json)>;
@@ -23,12 +23,12 @@ using function_logic = std::function<void(nlohmann::json)>;
 
 struct function {
     function_logic logic;
-    function_status status = IDLE;
+    function_status status = idle;
 };
 
 enum node_mode {
-    SEQUENTIAL,
-    CONCURRENT
+    sequential,
+    concurrent
 };
 
 struct node {
@@ -90,11 +90,11 @@ public:
         SPDLOG_INFO("Successfully initialized executor");
     }
 
-    bool add_node(const std::vector<function_logic> logic_vector) {
-        node_mode selected_mode = SEQUENTIAL;
-        if (logic_vector.size() > 1) selected_mode = CONCURRENT;
+    bool add_node(const std::vector<function_logic> &logic_vector) {
+        node_mode selected_mode = sequential;
+        if (logic_vector.size() > 1) selected_mode = concurrent;
 
-        std::string selected_mode_str = selected_mode == SEQUENTIAL ? "sequential" : "concurrent";
+        std::string selected_mode_str = selected_mode == sequential ? "sequential" : "concurrent";
 
         std::vector<function> function_vector;
 
@@ -114,10 +114,11 @@ public:
         for (int i = 0; i < nodes_.size(); i++) {
             switch (node &n = nodes_.at(i); n.mode) {
                 case SEQUENTIAL: {
+                case sequential: {
                     run_node_sequential(n);
                     break;
                 }
-                case CONCURRENT: {
+                case concurrent: {
                     run_node_concurrent(n);
                     break;
                 }
