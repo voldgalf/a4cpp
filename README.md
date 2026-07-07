@@ -84,7 +84,7 @@ int main() {
 
 
     // NOTICE: there is only MORE THEN ONE function passed to add_node ...
-    // this node will run as sequential
+    // this node will run as concurrent
     exe.add_node(
         {
             [](nlohmann::json state) { std::cout << "We run in parallel!" << std::endl; },
