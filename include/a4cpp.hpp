@@ -62,7 +62,6 @@ protected:
             SPDLOG_INFO("End concurrent node");
             return true;
         } catch (std::exception &e) {
-            SPDLOG_INFO("End concurrent node");
             SPDLOG_ERROR(e.what());
             return false;
         }
@@ -74,9 +73,6 @@ protected:
 
             function &func = n.function_vector.at(0);
             func.logic(state_);
-
-            SPDLOG_INFO("End sequential node");
-
             return true;
         } catch (std::exception &e) {
             SPDLOG_INFO("End sequential node");
