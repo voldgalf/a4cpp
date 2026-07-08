@@ -5,7 +5,7 @@
 #include <vector>
 #include <thread>
 #include <chrono>
-#include "include/a4cpp/a4cpp.hpp"
+#include "include/a4cpp.hpp"
 
 int main() {
     executor exe;
@@ -17,8 +17,6 @@ int main() {
             },
         }
     );
-
-    std::this_thread::sleep_for(std::chrono::seconds(2));
 
     exe.add_node(
         {
