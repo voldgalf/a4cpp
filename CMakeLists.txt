@@ -7,8 +7,10 @@ file(GLOB SOURCES CONFIGURE_DEPENDS
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
 )
 
+
+find_package(spdlog REQUIRED)
+
 add_executable(a4cpp main.cpp
         include/a4cpp.hpp)
 
-find_package(spdlog REQUIRED)
 target_link_libraries(a4cpp PRIVATE spdlog::spdlog)
