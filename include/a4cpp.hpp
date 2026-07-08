@@ -3,6 +3,7 @@
 //
 
 #pragma once
+
 #include <vector>
 #include <future>
 #include <bits/stdc++.h>
@@ -18,14 +19,14 @@ public:
     template<typename T>
     void set(const std::string &key, T value) {
         std::unique_lock lock(mutex_);
-
+        SPDLOG_DEBUG("Set state [{}]", key);
         data_[key] = std::move(value);
     }
 
     template<typename T>
     T &get(const std::string &key) {
         std::unique_lock lock(mutex_);
-
+        SPDLOG_DEBUG("Get state [{}]", key);
         return std::any_cast<T &>(data_.at(key));
     }
 
@@ -78,15 +79,16 @@ protected:
             std::vector<std::future<void> > futures;
 
             for (int i = 0; i < n.function_vector.size(); i++) {
-                SPDLOG_DEBUG("Launching future [{}/{}]", i, n.function_vector_.size());
+                SPDLOG_DEBUG("Launching future [{}/{}]", i, n.function_vector.size());
                 function &func = n.function_vector.at(i);
                 futures.push_back(std::async(std::launch::async, func.logic, state_));
             }
 
             for (int i = 0; i < futures.size(); i++) {
-                SPDLOG_DEBUG("Collecting future [{}/{}]", i, n.function_vector_.size());
+                SPDLOG_DEBUG("Collecting future [{}/{}]", i, n.function_vector.size());
                 futures[i].wait();
             }
+
             SPDLOG_INFO("End concurrent node - {}", n.id);
             return true;
         } catch (std::exception &e) {
