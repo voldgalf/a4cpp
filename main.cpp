@@ -6,7 +6,6 @@
 int main() {
     executor exe; // Create an executor instance
 
-
     // You can add a node by calling executor::add_node with std::vector<std::function<void(nlohmann::json)>> as your parameter.
     // This is a sequential node due to the vector's length which is one.
     exe.add_node(
@@ -16,7 +15,6 @@ int main() {
             },
         }
     );
-
 
     //Similar to the previous call except by including a vector larger than one, all functions will run concurrently.
     exe.add_node(
