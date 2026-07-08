@@ -40,40 +40,41 @@ sudo cmake --install build
 
 ```cpp
 #include <iostream>
-#include <a4cpp/node_executor.h>
+#include <vector>
+#include <chrono>
+#include "include/a4cpp.hpp"
 
 int main() {
-    a4cpp::node_executor executor; // Create an instance of node_executor
+    executor exe; // Create a executor instance
 
-    // Add a new node by defining a lambda function that has a nlohmann::json variable as an argument and returns a nlohmann::json variable
-    // Yes, the first argument is wrapped in a vector, but when the mode_flag parameter is SEQUENTIAL, only the first vector element is read
-    executor.add_node(
+    
+    // You can add a node by calling executor::add_node with std::vector<std::function<void(nlohmann::json)>> as your parameter.
+    // This is a sequential node due to the vector's length which is one.
+    exe.add_node(
         {
             [](nlohmann::json state) {
-                std::cout << "This is a sequential node!\n";
-                return state;
-            }
-        }, a4cpp::node::SEQUENTIAL);
-
-
-    // You can create a cncurrent node by setting the mode_flag to CONCURRENT and defining multiple lambda functions within the node_vector parameter
-    executor.add_node(
-        {
-            [](nlohmann::json state) {
-                std::cout << "We run at the same time!\n";
-                return state;
+                std::cout << "Hi from node!" << std::endl;
             },
-            [](nlohmann::json state) {
-                std::cout << "We do?\n";
-                return state;
-            }
-        }, a4cpp::node::CONCURRENT);
+        }
+    );
 
-    // This simply executes all nodes, in the order they are added
-    executor.run();
 
+    //Similar to the previous call except by including a vector larger then one, all functions will run concurrently.
+    exe.add_node(
+        {
+            [](nlohmann::json state) { std::cout << "Hi from node!" << std::endl; },
+            [](nlohmann::json state) { std::cout << "Hi from node!" << std::endl; },
+            [](nlohmann::json state) { std::cout << "Hi from node!" << std::endl; },
+
+        }
+    );
+
+    // You can call all nodes, in order of creation by calling executor::start()
+    exe.start();
+    
     return 0;
 }
+
 ```
 
 ## License
