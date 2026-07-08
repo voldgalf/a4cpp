@@ -24,7 +24,6 @@ int main() {
             [](const std::shared_ptr<state> &state) { std::cout << "Hi from node!" << std::endl; },
             [](const std::shared_ptr<state> &state) { std::cout << "Hi from node!" << std::endl; },
             [](const std::shared_ptr<state> &state) { std::cout << "Hi from node!" << std::endl; },
-
         }
     );
 

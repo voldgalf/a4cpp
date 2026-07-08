@@ -5,6 +5,7 @@
 #pragma once
 #include <vector>
 #include <future>
+#include <bits/stdc++.h>
 #include <any>
 #include <shared_mutex>
 #include <spdlog/spdlog.h>
@@ -59,6 +60,7 @@ enum node_mode {
 
 struct node {
     node_mode mode;
+    int id;
     std::vector<function> function_vector;
 };
 
@@ -71,7 +73,7 @@ protected:
 
     bool run_node_concurrent(node &n) {
         try {
-            SPDLOG_INFO("Start concurrent node");
+            SPDLOG_INFO("Start concurrent node - {}", n.id);
 
             std::vector<std::future<void> > futures;
 
@@ -85,7 +87,7 @@ protected:
                 SPDLOG_DEBUG("Collecting future [{}/{}]", i, n.function_vector_.size());
                 futures[i].wait();
             }
-            SPDLOG_INFO("End concurrent node");
+            SPDLOG_INFO("End concurrent node - {}", n.id);
             return true;
         } catch (std::exception &e) {
             SPDLOG_ERROR(e.what());
@@ -95,13 +97,13 @@ protected:
 
     bool run_node_sequential(node &n) const {
         try {
-            SPDLOG_INFO("Start sequential node");
+            SPDLOG_INFO("Start sequential node - {}", n.id);
 
             function &func = n.function_vector.at(0);
             func.logic(state_);
+            SPDLOG_INFO("End sequential node - {}", n.id);
             return true;
         } catch (std::exception &e) {
-            SPDLOG_INFO("End sequential node");
             SPDLOG_ERROR(e.what());
             return false;
         }
@@ -109,6 +111,7 @@ protected:
 
 public:
     executor() {
+        srand(time(nullptr));
         state_ = std::make_shared<state>();
         SPDLOG_INFO("Successfully initialized executor");
     }
@@ -128,7 +131,7 @@ public:
 
 
             SPDLOG_INFO("Created {} node", selected_mode_str);
-            nodes_.push_back({.mode = selected_mode, .function_vector = function_vector});
+            nodes_.push_back({.mode = selected_mode, .id = rand(), .function_vector = function_vector});
             return true;
         } catch (std::exception &e) {
             SPDLOG_ERROR(e.what());
