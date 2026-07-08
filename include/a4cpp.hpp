@@ -85,8 +85,14 @@ protected:
             }
 
             for (int i = 0; i < futures.size(); i++) {
-                SPDLOG_DEBUG("Collecting future [{}/{}]", i, n.function_vector.size());
-                futures[i].wait();
+                try {
+                    SPDLOG_DEBUG("Collecting future [{}/{}]", i, n.function_vector.size());
+                    futures[i].wait();
+                    n.function_vector[i].status = success;
+                } catch (std::exception &e) {
+                    n.function_vector[i].status = failure;
+                    SPDLOG_ERROR(e.what());
+                }
             }
 
             SPDLOG_INFO("End concurrent node - {}", n.id);
@@ -101,12 +107,13 @@ protected:
         try {
             SPDLOG_INFO("Start sequential node - {}", n.id);
 
-            function &func = n.function_vector.at(0);
-            func.logic(state_);
+            n.function_vector.at(0).logic(state_);
+            n.function_vector.at(0).status = success;
             SPDLOG_INFO("End sequential node - {}", n.id);
             return true;
         } catch (std::exception &e) {
             SPDLOG_ERROR(e.what());
+            n.function_vector.at(0).status = failure;
             return false;
         }
     }
