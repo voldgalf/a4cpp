@@ -13,7 +13,6 @@ int main() {
     exe.add_node(
         {
             [](nlohmann::json state) {
-                int e = 3 / 0;
                 std::cout << "Hi from node!" << std::endl;
             },
         }
