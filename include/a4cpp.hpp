@@ -27,7 +27,7 @@ public:
 
         return std::any_cast<T &>(data_.at(key));
     }
-    
+
     bool contains(const std::string &key) const {
         std::unique_lock lock(mutex_);
 
