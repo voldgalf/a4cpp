@@ -5,9 +5,40 @@
 #pragma once
 #include <vector>
 #include <future>
-#include <nlohmann/json.hpp>
+#include <any>
+#include <shared_mutex>
 #include <spdlog/spdlog.h>
 
+class state {
+    mutable std::shared_mutex mutex_;
+    std::unordered_map<std::string, std::any> data;
+
+public:
+    template<typename T>
+    void set(const std::string &key, T value) {
+        std::unique_lock lock(mutex_);
+        data[key] = std::move(value);
+    }
+
+    template<typename T>
+    T &get(const std::string &key) {
+        std::unique_lock lock(mutex_);
+        return std::any_cast<T &>(data.at(key));
+    }
+
+    template<typename T>
+    T *try_get(const std::string &key) {
+        std::unique_lock lock(mutex_);
+        auto it = data.find(key);
+        if (it == data.end()) return nullptr;
+        return std::any_cast<T>(&it->second);
+    }
+
+    bool contains(const std::string &key) const {
+        std::unique_lock lock(mutex_);
+        return data.count(key) > 0;
+    }
+};
 
 // Logic
 
@@ -17,7 +48,7 @@ enum function_status {
     failure
 };
 
-using function_logic = std::function<void(nlohmann::json)>;
+using function_logic = std::function<void(std::shared_ptr<state>)>;
 
 // Nodes
 
@@ -41,7 +72,7 @@ struct node {
 class executor {
 protected:
     std::vector<node> nodes_;
-    nlohmann::json state_;
+    std::shared_ptr<state> state_;
 
     bool run_node_concurrent(node &n) {
         try {
@@ -83,6 +114,7 @@ protected:
 
 public:
     executor() {
+        state_ = std::make_shared<state>();
         SPDLOG_INFO("Successfully initialized executor");
     }
 
