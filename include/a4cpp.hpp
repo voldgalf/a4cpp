@@ -11,32 +11,27 @@
 
 class state {
     mutable std::shared_mutex mutex_;
-    std::unordered_map<std::string, std::any> data;
+    std::unordered_map<std::string, std::any> data_;
 
 public:
     template<typename T>
     void set(const std::string &key, T value) {
         std::unique_lock lock(mutex_);
-        data[key] = std::move(value);
+
+        data_[key] = std::move(value);
     }
 
     template<typename T>
     T &get(const std::string &key) {
         std::unique_lock lock(mutex_);
-        return std::any_cast<T &>(data.at(key));
-    }
 
-    template<typename T>
-    T *try_get(const std::string &key) {
-        std::unique_lock lock(mutex_);
-        auto it = data.find(key);
-        if (it == data.end()) return nullptr;
-        return std::any_cast<T>(&it->second);
+        return std::any_cast<T &>(data_.at(key));
     }
-
+    
     bool contains(const std::string &key) const {
         std::unique_lock lock(mutex_);
-        return data.count(key) > 0;
+
+        return data_.contains(key);
     }
 };
 
