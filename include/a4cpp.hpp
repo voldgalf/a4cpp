@@ -122,6 +122,7 @@ public:
     executor() {
         srand(time(nullptr));
         state_ = std::make_shared<state>();
+
         SPDLOG_INFO("Successfully initialized executor");
     }
 

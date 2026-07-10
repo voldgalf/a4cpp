@@ -2,12 +2,10 @@
 #include "include/a4cpp.hpp"
 
 int main() {
-    spdlog::set_level(spdlog::level::trace);
-
     executor exe; // Create an executor instance
-
     // You can add a node by calling executor::add_node with std::vector<std::function<void(nlohmann::json)>> as your parameter.
     // This is a sequential node due to the vector's length which is one.
+
     exe.add_node(
         {
             [](const std::shared_ptr<state> &state) {
@@ -18,6 +16,8 @@ int main() {
     exe.add_node({
         {
             [](const std::shared_ptr<state> &state) {
+                int result = 2 * 2;
+                state->set("result", result);
             }
         }
     });
@@ -26,10 +26,12 @@ int main() {
     exe.add_node(
         {
             [](const std::shared_ptr<state> &state) {
+                std::cout << "What is 2 * 2? " << state->get<int>("result") << std::endl;
+                std::this_thread::sleep_for(std::chrono::seconds(1));
             },
             [](const std::shared_ptr<state> &state) {
-            },
-            [](const std::shared_ptr<state> &state) {
+                std::cout << "2 * 2 isn't 8! It is: " << state->get<int>("result") << std::endl;
+                std::this_thread::sleep_for(std::chrono::seconds(3));
             },
         }
     );
