@@ -13,15 +13,6 @@ int main() {
         }
     );
 
-    exe.add_node({
-        {
-            [](const std::shared_ptr<state> &state) {
-                int result = 2 * 2;
-                state->set("result", result);
-            }
-        }
-    });
-
     //Similar to the previous call except by including a vector larger than one, all functions will run concurrently.
     exe.add_node(
         {
