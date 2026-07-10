@@ -61,7 +61,6 @@ enum node_mode {
 
 struct node {
     node_mode mode;
-    int id;
     std::vector<function> function_vector;
 };
 
@@ -74,7 +73,7 @@ protected:
 
     bool run_node_concurrent(node &n) {
         try {
-            SPDLOG_INFO("Start concurrent node - {}", n.id);
+            SPDLOG_INFO("Start concurrent node");
 
             std::vector<std::future<void> > futures;
 
@@ -95,7 +94,7 @@ protected:
                 }
             }
 
-            SPDLOG_INFO("End concurrent node - {}", n.id);
+            SPDLOG_INFO("End concurrent node");
             return true;
         } catch (std::exception &e) {
             SPDLOG_ERROR(e.what());
@@ -105,11 +104,11 @@ protected:
 
     bool run_node_sequential(node &n) const {
         try {
-            SPDLOG_INFO("Start sequential node - {}", n.id);
+            SPDLOG_INFO("Start sequential node");
 
             n.function_vector.at(0).logic(state_);
             n.function_vector.at(0).status = success;
-            SPDLOG_INFO("End sequential node - {}", n.id);
+            SPDLOG_INFO("End sequential node");
             return true;
         } catch (std::exception &e) {
             SPDLOG_ERROR(e.what());
@@ -120,7 +119,6 @@ protected:
 
 public:
     executor() {
-        srand(time(nullptr));
         state_ = std::make_shared<state>();
 
         SPDLOG_INFO("Successfully initialized executor");
@@ -141,7 +139,7 @@ public:
 
 
             SPDLOG_INFO("Created {} node", selected_mode_str);
-            nodes_.push_back({.mode = selected_mode, .id = rand(), .function_vector = function_vector});
+            nodes_.push_back({.mode = selected_mode, .function_vector = function_vector});
             return true;
         } catch (std::exception &e) {
             SPDLOG_ERROR(e.what());
