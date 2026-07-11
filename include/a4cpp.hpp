@@ -93,7 +93,6 @@ protected:
                     SPDLOG_ERROR(e.what());
                 }
             }
-
             SPDLOG_INFO("End concurrent node");
             return true;
         } catch (std::exception &e) {
